@@ -99,8 +99,7 @@ def call_test(purpose, task, history, directory, action_input):
     )
     if result.returncode != 0:
         if "No module named pytest" in result.stderr:
-            os.system("pip install pytest")
-            history += "observation: pytest was not installed, so it was installed\n"
+            raise Exception("pytest not installed. Please install pytest (pip install pytest)")
         else:
             history += "observation: there are no tests! Test should be written in a test folder under {}\n".format(
                 directory
