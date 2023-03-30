@@ -23,6 +23,12 @@ Edit `run.py` to set your `purpose` and the `directory` of the target applicatio
 
 Let it run free! `python run.py`
 
+# To run with docker 
+
+build your dockers with: `docker-compose build` 
+
+run it with `docker-compose up`
+
 ## How does it work?
 
 Its basically a small state machine. Each state performs some action and returns its desired next state
