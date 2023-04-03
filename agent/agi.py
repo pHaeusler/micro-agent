@@ -194,7 +194,7 @@ def call_modify(purpose, task, history, directory, action_input):
         f.write(new_contents)
 
     history += "observation: file successfully modified\n"
-    history += "obsertation: {}\n".format(description)
+    history += "observation: {}\n".format(description)
     return "MAIN", None, history, task
 
 
