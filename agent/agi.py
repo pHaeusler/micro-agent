@@ -1,5 +1,6 @@
 import os
 import subprocess
+import time
 
 import openai
 
@@ -36,15 +37,23 @@ def run_gpt(
     ) + prompt_template.format(**prompt_kwargs)
     if VERBOSE:
         print(LOG_PROMPT.format(content))
-    resp = openai.ChatCompletion.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": content},
-        ],
-        temperature=0.0,
-        max_tokens=max_tokens,
-        stop=stop_tokens if stop_tokens else None,
-    )["choices"][0]["message"]["content"]
+    # we may get rate limited, so retry a few times
+    for _ in range(3):
+        try:
+            resp = openai.ChatCompletion.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": content},
+                ],
+                temperature=0.0,
+                max_tokens=max_tokens,
+                stop=stop_tokens if stop_tokens else None,
+            )["choices"][0]["message"]["content"]
+            # we successfully got a response, so we can break the try loop
+            break
+        except openai.error.RateLimitError:
+            print("Rate limit exceeded, waiting 1 minute")
+            time.sleep(60)
     if VERBOSE:
         print(LOG_RESPONSE.format(resp))
     return resp
