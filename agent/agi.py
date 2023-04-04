@@ -98,9 +98,12 @@ def call_test(purpose, task, history, directory, action_input):
         text=True,
     )
     if result.returncode != 0:
-        history += "observation: there are no tests! Test should be written in a test folder under {}\n".format(
-            directory
-        )
+        if "No module named pytest" in result.stderr:
+            raise Exception("pytest not installed. Please install pytest (pip install pytest)")
+        else:
+            history += "observation: there are no tests! Test should be written in a test folder under {}\n".format(
+                directory
+            )
         return "MAIN", None, history, task
     result = subprocess.run(
         ["python", "-m", "pytest", directory], capture_output=True, text=True
